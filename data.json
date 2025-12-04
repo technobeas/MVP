@@ -1,0 +1,212 @@
+[
+  {
+    "id": "P01",
+    "name": "Margherita (Personal)",
+    "description": "San Marzano-style tomato, mozzarella, basil",
+    "price": 220,
+    "popular": true,
+    "category": "Pizza",
+    "image": "assets/images/pizza.webp",
+    "prep": "15 minutes",
+    "tags": ["contains-dairy", "vegetarian"]
+  },
+  {
+    "id": "P02",
+    "name": "Pepperoni (Personal)",
+    "description": "Classic pepperoni, tomato sauce, mozzarella",
+    "price": 260,
+    "popular": true,
+    "category": "Pizza",
+    "image": "assets/images/pizza2.webp",
+    "prep": "16 minutes",
+    "tags": ["contains-dairy", "contains-chicken"]
+  },
+  {
+    "id": "P03",
+    "name": "Veggie Delight (Personal)",
+    "description": "Bell peppers, olives, mushrooms, onions, mozzarella",
+    "price": 240,
+    "popular": false,
+    "category": "Pizza",
+    "image": "assets/images/pizza3.webp",
+    "prep": "15 minutes",
+    "tags": ["contains-dairy", "vegetarian"]
+  },
+  {
+    "id": "P04",
+    "name": "BBQ Chicken (Personal)",
+    "description": "Smoky BBQ sauce, grilled chicken, red onion",
+    "price": 300,
+    "popular": false,
+    "category": "Pizza",
+    "image": "assets/images/pizza4.webp",
+    "prep": "17 minutes",
+    "tags": ["contains-dairy"]
+  },
+  {
+    "id": "B01",
+    "name": "Classic Cheese Burger",
+    "description": "Potato patty, cheddar, lettuce, tomato, signature sauce",
+    "price": 180,
+    "popular": true,
+    "category": "Burgers",
+    "image": "assets/images/burger2.webp",
+    "prep": "10 minutes",
+    "tags": ["contains-gluten", "contains-dairy"]
+  },
+  {
+    "id": "B02",
+    "name": "Grilled Chicken Burger",
+    "description": "Marinated grilled chicken, slaw, aioli",
+    "price": 220,
+    "popular": false,
+    "category": "Burgers",
+    "image": "assets/images/burger3.webp",
+    "prep": "12 minutes",
+    "tags": ["contains-gluten"]
+  },
+  {
+    "id": "B03",
+    "name": "Veg Burger",
+    "description": "Chickpea & mushroom patty, pickles, herb mayo",
+    "price": 160,
+    "popular": false,
+    "category": "Burgers",
+    "image": "assets/images/burger.webp",
+    "prep": "10 minutes",
+    "tags": ["vegetarian"]
+  },
+  {
+    "id": "S01",
+    "name": "Classic Club Sandwich",
+    "description": "Toasted bread, chicken, lettuce, tomato, mayo",
+    "price": 180,
+    "popular": true,
+    "category": "Sandwich",
+    "image": "assets/images/sandwich1.webp",
+    "prep": "8 minutes",
+    "tags": ["contains-gluten"]
+  },
+  {
+    "id": "S02",
+    "name": "Veggie Grilled Sandwich",
+    "description": "Grilled vegetables, cheese, pesto spread",
+    "price": 160,
+    "popular": false,
+    "category": "Sandwich",
+    "image": "assets/images/sandwich2.webp",
+    "prep": "7 minutes",
+    "tags": ["vegetarian", "contains-dairy", "contains-gluten"]
+  },
+  {
+    "id": "S03",
+    "name": "Tuna Melt Sandwich",
+    "description": "Tuna mix, cheddar cheese, onions, toasted bread",
+    "price": 200,
+    "popular": true,
+    "category": "Sandwich",
+    "image": "assets/images/sandwich3.webp",
+    "prep": "9 minutes",
+    "tags": ["contains-dairy", "contains-gluten"]
+  },
+  {
+    "id": "S04",
+    "name": "Egg Mayo Sandwich",
+    "description": "Creamy egg mayo, lettuce, soft bread",
+    "price": 140,
+    "popular": false,
+    "category": "Sandwich",
+    "image": "assets/images/sandwich4.webp",
+    "prep": "6 minutes",
+    "tags": ["contains-eggs", "contains-gluten"]
+  },
+
+  {
+    "id": "J01",
+    "name": "Fresh Orange Juice",
+    "description": "100% freshly squeezed oranges",
+    "price": 120,
+    "popular": true,
+    "category": "Juice",
+    "image": "assets/images/juice1.webp",
+    "prep": "3 minutes",
+    "tags": ["vegan"]
+  },
+  {
+    "id": "J02",
+    "name": "Watermelon Cooler",
+    "description": "Fresh watermelon blended with mint",
+    "price": 110,
+    "popular": false,
+    "category": "Juice",
+    "image": "assets/images/juice2.webp",
+    "prep": "3 minutes",
+    "tags": ["vegan"]
+  },
+  {
+    "id": "J03",
+    "name": "Mango Shake",
+    "description": "Ripe mango pulp blended with milk",
+    "price": 150,
+    "popular": true,
+    "category": "Juice",
+    "image": "assets/images/juice3.webp",
+    "prep": "4 minutes",
+    "tags": ["contains-dairy"]
+  },
+  {
+    "id": "J04",
+    "name": "Green Detox Juice",
+    "description": "Spinach, apple, cucumber, ginger",
+    "price": 130,
+    "popular": false,
+    "category": "Juice",
+    "image": "assets/images/juice4.webp",
+    "prep": "4 minutes",
+    "tags": ["vegan"]
+  },
+  {
+    "id": "C01",
+    "name": "Americano",
+    "description": "Rich espresso diluted with hot water",
+    "price": 120,
+    "popular": true,
+    "category": "Coffee",
+    "image": "assets/images/Coffee1.webp",
+    "prep": "3 minutes",
+    "tags": []
+  },
+  {
+    "id": "C02",
+    "name": "Cappuccino",
+    "description": "Espresso with steamed milk and thick foam",
+    "price": 150,
+    "popular": true,
+    "category": "Coffee",
+    "image": "assets/images/Coffee2.webp",
+    "prep": "4 minutes",
+    "tags": ["contains-dairy"]
+  },
+  {
+    "id": "C03",
+    "name": "Cafe Latte",
+    "description": "Smooth espresso with creamy steamed milk",
+    "price": 160,
+    "popular": false,
+    "category": "Coffee",
+    "image": "assets/images/Coffee3.webp",
+    "prep": "4 minutes",
+    "tags": ["contains-dairy"]
+  },
+  {
+    "id": "C04",
+    "name": "Mocha",
+    "description": "Espresso mixed with chocolate and steamed milk",
+    "price": 170,
+    "popular": false,
+    "category": "Coffee",
+    "image": "assets/images/Coffee4.webp",
+    "prep": "5 minutes",
+    "tags": ["contains-dairy"]
+  }
+]

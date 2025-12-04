@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>KDS — OWL Cafe</title>
+
+    <!-- Matching fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Special+Elite&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg: #ffffff;
+        --paper: #fbfaf8;
+        --accent: #c4913a;
+        --accent-dark: #a06f2a;
+        --muted: #6b6b6b;
+        --text: #111;
+        --radius: 12px;
+        --card-shadow: 0 8px 26px rgba(17, 17, 17, 0.06);
+        --panel-shadow: 0 10px 32px rgba(17, 17, 17, 0.04);
+        --max-width: 1100px;
+      }
+
+      /* Base */
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        background: linear-gradient(180deg, #fff, #fbfbfb);
+        font-family: "Special Elite", monospace;
+        color: var(--text);
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap {
+        max-width: var(--max-width);
+        margin: 16px auto;
+        padding: 12px;
+        box-sizing: border-box;
+      }
+
+      /* Header */
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .header h2 {
+        margin: 0;
+        font-family: "Playfair Display", serif;
+        font-size: 20px;
+        letter-spacing: 0.6px;
+      }
+      .header a {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 10px;
+        background: #fff;
+        border: 1px solid rgba(17, 17, 17, 0.04);
+        text-decoration: none;
+        color: var(--accent-dark);
+        font-weight: 700;
+        box-shadow: var(--panel-shadow);
+      }
+
+      /* Panel */
+      .panel {
+        background: linear-gradient(180deg, var(--paper), #fff);
+        padding: 12px;
+        border-radius: var(--radius);
+        box-shadow: var(--card-shadow);
+        border: 1px solid rgba(17, 17, 17, 0.03);
+      }
+
+      /* Orders header */
+      .orders-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+      .orders-meta {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      /* Order list — stacked vertical cards */
+      .order-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        max-height: calc(100vh - 130px);
+        overflow: auto;
+        padding-right: 6px;
+      }
+      .order-list::-webkit-scrollbar {
+        height: 8px;
+        width: 8px;
+      }
+      .order-list::-webkit-scrollbar-thumb {
+        background: rgba(17, 17, 17, 0.04);
+        border-radius: 8px;
+      }
+
+      /* Card: vertical / column layout to stack content top → bottom */
+      .card {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        border-radius: 12px;
+        padding: 14px;
+        background: linear-gradient(180deg, #fff, var(--paper));
+        border: 1px solid rgba(17, 17, 17, 0.04);
+        box-shadow: 0 6px 18px rgba(17, 17, 17, 0.04);
+        transition: transform 150ms ease, box-shadow 150ms ease;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .card:focus-within,
+      .card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--card-shadow);
+      }
+
+      /* Top meta row (id, time, table) */
+      .card-meta-row {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .left-meta {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .order-id {
+        font-family: "Playfair Display", serif;
+        font-weight: 700;
+        font-size: 16px;
+        background: linear-gradient(
+          90deg,
+          rgba(196, 145, 58, 0.06),
+          rgba(160, 111, 42, 0.03)
+        );
+        padding: 6px 10px;
+        border-radius: 8px;
+        color: var(--text);
+      }
+      .meta-small {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      /* Items list inside card */
+      .items {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding-top: 4px;
+        border-top: 1px dashed rgba(17, 17, 17, 0.03);
+      }
+      .item-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .item-qty {
+        min-width: 42px;
+        padding: 6px 8px;
+        border-radius: 8px;
+        background: var(--paper);
+        border: 1px solid rgba(17, 17, 17, 0.04);
+        font-weight: 800;
+        text-align: center;
+      }
+      .item-name {
+        font-family: "Playfair Display", serif;
+        font-weight: 700;
+      }
+      .item-prep {
+        font-size: 13px;
+        color: var(--muted);
+        margin-left: auto;
+      }
+
+      /* small footer row (ETA / notes) */
+      .card-footer {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        justify-content: flex-start;
+        color: var(--muted);
+        font-size: 13px;
+        padding-top: 8px;
+      }
+
+      /* Done button */
+      .done-btn {
+        margin-left: auto;
+        background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+        color: #fff;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 10px;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(160, 111, 42, 0.06);
+      }
+      .done-btn:active {
+        transform: translateY(1px);
+        opacity: 0.98;
+      }
+
+      /* Hide legacy action buttons produced by older app.js (just in case) */
+      .btn,
+      .set-prep,
+      .set-ready,
+      .set-served {
+        display: none !important;
+      }
+
+      /* Mobile friendly */
+      @media (max-width: 720px) {
+        .wrap {
+          padding: 10px;
+        }
+        .order-list {
+          max-height: calc(100vh - 120px);
+        }
+        .order-id {
+          font-size: 15px;
+        }
+        .item-qty {
+          min-width: 40px;
+          padding: 6px;
+        }
+      }
+
+      /* Toast */
+      .toast {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        background: #222;
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 8px;
+        z-index: 9999;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      }
+    </style>
+  </head>
+
+  <body data-page="kds">
+    <div class="wrap">
+      <div class="header">
+        <h2>Kitchen Display</h2>
+        <div><a href="index.html" aria-label="Open menu">Back to Menu</a></div>
+      </div>
+
+      <section class="panel">
+        <div class="orders-header">
+          <div>
+            <div
+              style="font-weight: 900; font-family: 'Playfair Display', serif"
+            >
+              Orders
+            </div>
+          </div>
+        </div>
+
+        <div id="kdsContainer" class="order-list" aria-live="polite"></div>
+      </section>
+    </div>
+
+    <!-- Firestore listener + rendering + deletion logic -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        query,
+        orderBy,
+        onSnapshot,
+        doc,
+        deleteDoc,
+      } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+      // ====== Replace with your Firebase config (kept same as app.js example) ======
+      const firebaseConfig = {
+        apiKey: "AIzaSyAyyW44KAhKbl-pz5yXSlZveDJNAVETqpY",
+        authDomain: "cafe-afe4b.firebaseapp.com",
+        projectId: "cafe-afe4b",
+        storageBucket: "cafe-afe4b.firebasestorage.app",
+        messagingSenderId: "115862613556",
+        appId: "1:115862613556:web:23e5fa5648137ff79d2461",
+        measurementId: "G-3056BTEZPX",
+      };
+      // =============================================================================
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const ordersCol = collection(db, "orders");
+
+      const kdsContainer = document.getElementById("kdsContainer");
+
+      function showToast(msg, ms = 2500) {
+        const el = document.createElement("div");
+        el.className = "toast";
+        el.textContent = msg;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), ms);
+      }
+
+      // render a single order card (skips status === "Served")
+      // add near top of your script (once)
+      const currencyFmt = new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 0,
+      });
+
+      // replace your renderOrderCard with this:
+      function renderOrderCard(order) {
+        // skip served orders
+        if ((order.status || "").toLowerCase() === "served") return null;
+
+        const card = document.createElement("div");
+        card.className = "card";
+        card.dataset.id = order.id;
+
+        // meta row
+        const metaRow = document.createElement("div");
+        metaRow.className = "card-meta-row";
+
+        const leftMeta = document.createElement("div");
+        leftMeta.className = "left-meta";
+
+        const idEl = document.createElement("div");
+        idEl.className = "order-id";
+        idEl.textContent = `#${(order.id || "").slice(0, 6)}`;
+
+        const tableEl = document.createElement("div");
+        tableEl.className = "meta-small";
+        tableEl.textContent = `Table: ${order.table || "—"}`;
+
+        const timeEl = document.createElement("div");
+        timeEl.className = "meta-small";
+        try {
+          timeEl.textContent = new Date(order.created).toLocaleTimeString();
+        } catch (e) {
+          timeEl.textContent = order.created || "";
+        }
+
+        // leftMeta.appendChild(idEl);
+        leftMeta.appendChild(timeEl);
+        leftMeta.appendChild(tableEl);
+
+        // compute total for the order (sum price * qty)
+        let total = 0;
+        (order.items || []).forEach((it) => {
+          const p = Number(it.price || 0);
+          const q = Number(it.qty || 0);
+          total += (isFinite(p) ? p : 0) * (isFinite(q) ? q : 0);
+        });
+
+        const rightMeta = document.createElement("div");
+        rightMeta.className = "meta-small";
+        // show both ETA (if present) and total (formatted)
+        const parts = [];
+        if (order.etaLabel) parts.push(`ETA: ${order.etaLabel}`);
+        // parts.push(currencyFmt.format(total || 0));
+        rightMeta.textContent = parts.join(" • ");
+
+        metaRow.appendChild(leftMeta);
+        metaRow.appendChild(rightMeta);
+
+        // items
+        const itemsWrap = document.createElement("div");
+        itemsWrap.className = "items";
+
+        (order.items || []).forEach((it) => {
+          const row = document.createElement("div");
+          row.className = "item-row";
+
+          const qty = document.createElement("div");
+          qty.className = "item-qty";
+          qty.textContent = it.qty != null ? it.qty : 1;
+
+          const name = document.createElement("div");
+          name.className = "item-name";
+          name.textContent = it.name || "Unknown";
+
+          // SAFE PREP TEXT (coerce to string)
+          let prepText = it.prep ?? it.preparation ?? "";
+          prepText =
+            typeof prepText === "string"
+              ? prepText.trim()
+              : String(prepText || "").trim();
+
+          const prep = document.createElement("div");
+          prep.className = "item-prep";
+          if (prepText) prep.textContent = prepText;
+
+          // append elements in intended order
+          row.appendChild(qty);
+          row.appendChild(name);
+          if (prepText) row.appendChild(prep);
+
+          itemsWrap.appendChild(row);
+        });
+
+        // footer (notes + done)
+        const footer = document.createElement("div");
+        footer.className = "card-footer";
+
+        const notes = document.createElement("div");
+        notes.textContent = order.notes ? `Notes: ${order.notes}` : "";
+
+        const doneBtn = document.createElement("button");
+        doneBtn.className = "done-btn";
+        doneBtn.type = "button";
+        doneBtn.textContent = "Done";
+        doneBtn.title = "Mark order done (permanently delete)";
+        doneBtn.addEventListener("click", async () => {
+          const ok = confirm(
+            `Permanently remove order #${(order.id || "").slice(
+              0,
+              6
+            )}? This cannot be undone.`
+          );
+          if (!ok) return;
+          try {
+            await deleteDoc(doc(db, "orders", order.id));
+            showToast("Order removed");
+          } catch (err) {
+            console.error("delete failed", err);
+            showToast("Failed to delete order");
+          }
+        });
+
+        // optionally show order subtotal in footer too (small, right-aligned)
+        const subtotalEl = document.createElement("div");
+        subtotalEl.className = "meta-small";
+        subtotalEl.style.marginLeft = "8px";
+        subtotalEl.style.fontWeight = "800";
+        subtotalEl.textContent = `Total: ${currencyFmt.format(total || 0)}`;
+
+        footer.appendChild(notes);
+        footer.appendChild(subtotalEl);
+        footer.appendChild(doneBtn);
+
+        card.appendChild(metaRow);
+        card.appendChild(itemsWrap);
+        card.appendChild(footer);
+
+        return card;
+      }
+
+      // Realtime listener that filters out served orders and renders cards.
+      // Orders are kept sorted by created desc (newest first).
+      const q = query(ordersCol, orderBy("created", "desc"));
+      onSnapshot(
+        q,
+        (snap) => {
+          // build a small map of current orders (skip served)
+          const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          // clear container
+          kdsContainer.innerHTML = "";
+
+          let visibleCount = 0;
+          for (const o of docs) {
+            if ((o.status || "").toLowerCase() === "served") continue;
+            const card = renderOrderCard(o);
+            if (card) {
+              kdsContainer.appendChild(card);
+              visibleCount++;
+            }
+          }
+
+          if (!visibleCount) {
+            const msg = document.createElement("div");
+            msg.className = "meta-small";
+            msg.style.padding = "10px 6px";
+            msg.textContent = "No active orders.";
+            kdsContainer.appendChild(msg);
+          }
+        },
+        (err) => {
+          console.error("KDS snapshot error", err);
+          kdsContainer.innerHTML =
+            '<div class="meta-small" style="padding:10px 6px">Failed to load orders</div>';
+        }
+      );
+    </script>
+  </body>
+</html>
