@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>KDS — OWL Cafe</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Special+Elite&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg: #ffffff;
+        --paper: #fbfaf8;
+        --accent: #c4913a; /* primary */
+        --accent-dark: #8b5e1f;
+        --danger: #d23b3b;
+        --muted: #6b6b6b;
+        --text: #111213;
+        --radius: 12px;
+        --card-shadow: 0 10px 30px rgba(17, 17, 17, 0.06);
+        --panel-shadow: 0 8px 26px rgba(17, 17, 17, 0.04);
+        --max-width: 1200px;
+        --gap: 12px;
+        --btn-focus: 3px;
+        --transition-speed: 160ms;
+      }
+
+      /* Reset & global */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        background: linear-gradient(180deg, #fff, #fbfbfb);
+        font-family: "Special Elite", monospace;
+        color: var(--text);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        min-width: 0;
+      }
+      .wrap {
+        width: 100%;
+        max-width: var(--max-width);
+        margin: 16px auto;
+        padding: 14px;
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: var(--gap);
+      }
+
+      .header {
+        grid-column: 1/-1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 6px;
+      }
+      .header h2 {
+        margin: 0;
+        font-family: "Playfair Display", serif;
+        font-size: 20px;
+        letter-spacing: 0.6px;
+      }
+
+      .panel {
+        background: linear-gradient(180deg, var(--paper), #fff);
+        padding: 14px;
+        border-radius: var(--radius);
+        box-shadow: var(--card-shadow);
+        border: 1px solid rgba(17, 17, 17, 0.03);
+        overflow: hidden;
+      }
+
+      .items-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        height: calc(100vh - 120px);
+      }
+      .items-controls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 0;
+        cursor: pointer;
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-weight: 800;
+        font-size: 13px;
+        transition: transform var(--transition-speed) ease,
+          box-shadow var(--transition-speed) ease,
+          opacity var(--transition-speed) ease;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 var(--btn-focus) rgba(196, 145, 58, 0.18);
+        transform: translateY(-1px);
+      }
+      .btn:active {
+        transform: translateY(0);
+        opacity: 0.95;
+      }
+
+      .btn--primary {
+        background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+        color: #fff;
+        box-shadow: 0 8px 20px rgba(160, 111, 42, 0.06);
+      }
+      .btn--danger {
+        background: linear-gradient(90deg, var(--danger), #b22b2b);
+        color: #fff;
+      }
+      .btn--ghost {
+        background: #fff;
+        color: var(--text);
+        border: 1px solid rgba(17, 17, 17, 0.06);
+        box-shadow: var(--panel-shadow);
+      }
+      .btn--sm {
+        padding: 8px 10px;
+        border-radius: 8px;
+        font-size: 13px;
+      }
+
+      .btn:hover {
+        transform: translateY(-3px);
+      }
+
+      .search {
+        flex: 1;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(17, 17, 17, 0.06);
+        background: #fff;
+        font-size: 14px;
+        min-width: 0;
+        box-shadow: none;
+      }
+
+      .items-list {
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background: linear-gradient(180deg, #fff, var(--paper));
+        border: 1px solid rgba(17, 17, 17, 0.03);
+        max-width: 100%;
+      }
+
+      .items-list .item-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px;
+        border-radius: 10px;
+        background: transparent;
+        border: 1px dashed rgba(17, 17, 17, 0.02);
+        width: 100%;
+        flex-wrap: wrap;
+        border: 1px solid rgba(17, 17, 17, 0.05);
+        transition: background var(--transition-speed) ease,
+          transform var(--transition-speed) ease;
+      }
+      .items-list .item-row:hover {
+        background: rgba(196, 145, 58, 0.03);
+        transform: translateY(-2px);
+      }
+
+      .item-thumb {
+        width: 56px;
+        height: 40px;
+        border-radius: 8px;
+        overflow: hidden;
+        flex-shrink: 0;
+        background: var(--paper);
+      }
+      .item-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .item-name {
+        font-family: "Playfair Display", serif;
+        font-weight: 700;
+      }
+
+      .item-meta {
+        margin-left: auto;
+        color: var(--muted);
+        font-size: 13px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-shrink: 0;
+      }
+
+      .badge-hidden {
+        background: #fff7ef;
+        padding: 4px 8px;
+        border-radius: 999px;
+        font-weight: 800;
+        color: var(--accent-dark);
+        border: 1px solid rgba(160, 111, 42, 0.06);
+      }
+      .toggle-btn {
+        /* visible -> hide action */
+      }
+      .toggle-unhide {
+        /* unhide */
+      }
+
+      .small-btn {
+        padding: 8px 10px;
+        border-radius: 8px;
+        background: #fff;
+        border: none;
+        box-shadow: var(--panel-shadow);
+        cursor: pointer;
+      }
+
+      .toggle-btn {
+        background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+        color: #fff;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: none;
+        font-weight: 800;
+        cursor: pointer;
+      }
+      .toggle-unhide {
+        background: linear-gradient(90deg, var(--danger), #b22b2b);
+        color: #fff;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: none;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .kds-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .orders-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+      .order-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        max-height: calc(100vh - 130px);
+        overflow: auto;
+        padding-right: 6px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .card {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        border-radius: 12px;
+        padding: 14px;
+        background: linear-gradient(180deg, #fff, var(--paper));
+        border: 1px solid rgba(17, 17, 17, 0.04);
+        box-shadow: 0 6px 18px rgba(17, 17, 17, 0.04);
+        transition: transform var(--transition-speed) ease,
+          box-shadow var(--transition-speed) ease;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--card-shadow);
+      }
+
+      .card-meta-row {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .left-meta {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .order-id {
+        font-family: "Playfair Display", serif;
+        font-weight: 700;
+        font-size: 16px;
+        background: linear-gradient(
+          90deg,
+          rgba(196, 145, 58, 0.06),
+          rgba(160, 111, 42, 0.03)
+        );
+        padding: 6px 10px;
+        border-radius: 8px;
+        color: var(--text);
+      }
+      .meta-small {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .card .items {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding-top: 4px;
+        border-top: 1px dashed rgba(17, 17, 17, 0.03);
+      }
+      .card .items .item-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        flex-wrap: wrap;
+      }
+      .item-qty {
+        min-width: 42px;
+        padding: 6px 8px;
+        border-radius: 8px;
+        background: var(--paper);
+        border: 1px solid rgba(17, 17, 17, 0.04);
+        font-weight: 800;
+        text-align: center;
+      }
+      .item-prep {
+        font-size: 13px;
+        color: var(--muted);
+        margin-left: auto;
+      }
+      .unavailable-badge {
+        background: #ffecec;
+        color: #9b1b1b;
+        padding: 4px 8px;
+        border-radius: 8px;
+        font-weight: 800;
+        border: 1px solid rgba(155, 27, 27, 0.08);
+        margin-left: 8px;
+      }
+
+      .card-footer {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        justify-content: flex-start;
+        color: var(--muted);
+        font-size: 13px;
+        padding-top: 8px;
+      }
+      .done-btn {
+        margin-left: auto;
+        background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+        color: #fff;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 10px;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(160, 111, 42, 0.06);
+      }
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+      }
+      .modal {
+        background: #fff;
+        padding: 18px;
+        border-radius: 12px;
+        min-width: 320px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      }
+      .modal h3 {
+        margin: 0 0 8px 0;
+        font-family: "Playfair Display", serif;
+      }
+      .modal .modal-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: flex-end;
+        margin-top: 12px;
+      }
+      .btn-muted {
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid rgba(17, 17, 17, 0.06);
+        background: #fff;
+        cursor: pointer;
+      }
+
+      .toast {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        background: #222;
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 8px;
+        z-index: 9999;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      @media (max-width: 920px) {
+        .wrap {
+          grid-template-columns: 1fr;
+          padding: 10px;
+          gap: 12px;
+        }
+
+        .kds-panel {
+          order: -1;
+        }
+        .items-panel {
+          order: 1;
+          height: auto;
+        }
+
+        .order-list {
+          max-height: 60vh;
+        }
+        .items-list {
+          height: 48vh;
+          max-height: 48vh;
+          padding: 8px;
+        }
+
+        .items-list .item-row {
+          display: grid;
+          grid-template-columns: 76px 1fr auto;
+          align-items: center;
+          gap: 12px;
+          padding: 12px;
+          border-radius: 12px;
+          background: #fff;
+          border: 1px solid rgba(17, 17, 17, 0.04);
+          box-shadow: 0 6px 16px rgba(17, 17, 17, 0.04);
+          transition: transform 120ms ease, box-shadow 120ms ease,
+            background 120ms ease;
+        }
+
+        .items-list .item-row:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 10px 26px rgba(17, 17, 17, 0.06);
+          background: linear-gradient(180deg, #fff, #fbfaf8);
+        }
+
+        .item-thumb {
+          width: 76px;
+          height: 56px;
+          border-radius: 10px;
+        }
+
+        .item-row > div:nth-child(2) {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          min-width: 0;
+        }
+        .item-name {
+          font-size: 16px;
+          line-height: 1.15;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .item-row .meta-small {
+          font-size: 13px;
+          color: var(--muted);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .item-row .item-meta {
+          margin-left: 0;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 6px;
+          justify-self: end;
+          min-width: 72px;
+          font-weight: 700;
+        }
+
+        .items-list .item-row .toggle-btn,
+        .items-list .item-row .toggle-unhide {
+          width: 88px;
+          min-height: 44px;
+          padding: 10px 12px;
+          border-radius: 10px;
+          font-size: 14px;
+        }
+
+        .items-controls {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 10px;
+        }
+        .items-controls .search {
+          min-height: 44px;
+          width: 100%;
+        }
+        .small-btn {
+          width: 100%;
+          min-height: 44px;
+        }
+
+        .item-meta > .meta-small {
+          max-width: 110px;
+          text-align: right;
+        }
+
+        .card {
+          padding: 12px;
+        }
+        .card-meta-row {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 6px;
+        }
+        .done-btn {
+          width: 100%;
+          padding: 12px;
+          min-height: 48px;
+          margin-left: 0;
+        }
+
+        .meta-small {
+          font-size: 14px;
+        }
+      }
+
+      .wrap * {
+        max-width: 100vw;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+      }
+
+      button,
+      .btn,
+      .small-btn,
+      .toggle-btn,
+      .toggle-unhide,
+      .done-btn,
+      .btn--ghost,
+      .btn--primary,
+      .btn--danger {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-appearance: none;
+        outline: none;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        transform: translateZ(0);
+        will-change: transform, opacity;
+        touch-action: manipulation;
+        background-color: var(--accent);
+      }
+
+      .btn--primary {
+        background-color: var(--accent);
+      }
+      .btn--danger {
+        background-color: var(--danger);
+      }
+      .btn--ghost {
+        background-color: #fff;
+      }
+
+      button:active,
+      .btn:active,
+      .small-btn:active,
+      .toggle-btn:active,
+      .toggle-unhide:active,
+      .done-btn:active {
+        transform: translateY(0);
+        opacity: 0.97;
+        transition: transform 80ms ease, opacity 80ms ease;
+      }
+
+      button:focus-visible,
+      .btn:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(196, 145, 58, 0.18);
+      }
+    </style>
+  </head>
+
+  <body data-page="kds">
+    <div class="wrap">
+      <section class="panel items-panel" id="itemsPanel">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <div style="font-weight: 900; font-family: 'Playfair Display', serif">
+            Items
+          </div>
+          <div class="items-controls">
+            <input
+              id="itemSearch"
+              class="search"
+              placeholder="Search items (name, category)..."
+            />
+            <button
+              id="showHiddenToggle"
+              class="small-btn btn--ghost btn--sm"
+              title="Toggle showing hidden items"
+              aria-pressed="false"
+            >
+              Show hidden
+            </button>
+            <button
+              id="refreshItems"
+              class="small-btn btn--sm"
+              title="Refresh items"
+            >
+              Refresh
+            </button>
+          </div>
+        </div>
+
+        <div
+          id="itemsList"
+          class="items-list"
+          role="list"
+          aria-label="Item list"
+        ></div>
+      </section>
+
+      <section class="panel kds-panel">
+        <div class="orders-header">
+          <div style="font-weight: 900; font-family: 'Playfair Display', serif">
+            Orders
+          </div>
+          <input
+            id="kdsSearch"
+            class="search"
+            placeholder="Filter orders (table, item)..."
+            style="width: 200px"
+          />
+        </div>
+
+        <div id="kdsContainer" class="order-list" aria-live="polite"></div>
+      </section>
+    </div>
+
+    <div id="modalRoot" style="display: none"></div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        query,
+        orderBy,
+        onSnapshot,
+        doc,
+        setDoc,
+        getDocs,
+        deleteDoc,
+      } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyAyyW44KAhKbl-pz5yXSlZveDJNAVETqpY",
+        authDomain: "cafe-afe4b.firebaseapp.com",
+        projectId: "cafe-afe4b",
+        storageBucket: "cafe-afe4b.firebasestorage.app",
+        messagingSenderId: "115862613556",
+        appId: "1:115862613556:web:23e5fa5648137ff79d2461",
+        measurementId: "G-3056BTEZPX",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      const itemsList = document.getElementById("itemsList");
+      const itemSearch = document.getElementById("itemSearch");
+      const showHiddenToggle = document.getElementById("showHiddenToggle");
+      const refreshItemsBtn = document.getElementById("refreshItems");
+      const modalRoot = document.getElementById("modalRoot");
+      const kdsContainer = document.getElementById("kdsContainer");
+      const kdsSearch = document.getElementById("kdsSearch");
+
+      const currencyFmt = new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 0,
+      });
+
+      function showToast(msg, ms = 2200) {
+        const el = document.createElement("div");
+        el.className = "toast";
+        el.textContent = msg;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), ms);
+      }
+
+      function confirmModal({
+        title = "Confirm",
+        message = "",
+        confirmText = "Yes",
+        cancelText = "Cancel",
+      } = {}) {
+        return new Promise((resolve) => {
+          modalRoot.style.display = "block";
+          const backdrop = document.createElement("div");
+          backdrop.className = "modal-backdrop";
+
+          const modal = document.createElement("div");
+          modal.className = "modal";
+          modal.innerHTML = `<h3>${title}</h3><div style="color:var(--muted);font-size:14px">${message}</div>`;
+
+          const row = document.createElement("div");
+          row.className = "modal-row";
+          const cancel = document.createElement("button");
+          cancel.className = "btn-muted";
+          cancel.textContent = cancelText;
+          const ok = document.createElement("button");
+          ok.className = "toggle-btn";
+          ok.textContent = confirmText;
+
+          row.appendChild(cancel);
+          row.appendChild(ok);
+          modal.appendChild(row);
+          backdrop.appendChild(modal);
+          modalRoot.appendChild(backdrop);
+
+          function cleanup(val) {
+            backdrop.remove();
+            modalRoot.style.display = "none";
+            resolve(val);
+          }
+          cancel.addEventListener("click", () => cleanup(false));
+          ok.addEventListener("click", () => cleanup(true));
+          backdrop.addEventListener("click", (e) => {
+            if (e.target === backdrop) cleanup(false);
+          });
+        });
+      }
+
+      let allData = [];
+      let allDataMap = new Map();
+      async function loadDataJson() {
+        try {
+          const res = await fetch("data.json", { cache: "no-store" });
+          allData = await res.json();
+        } catch (err) {
+          console.error("Failed to load data.json", err);
+          allData = [];
+        }
+        allData = (allData || []).map((p) => ({
+          id: String(p.id),
+          name: p.name || "Untitled",
+          price: Number(p.price || 0),
+          image: p.image || "owl-logo.webp",
+          category: p.category || "",
+          description: p.description || "",
+          prep: p.prep || p.preparation || "",
+          popular: !!p.popular,
+          tags: Array.isArray(p.tags) ? p.tags : [],
+        }));
+        allDataMap = new Map(allData.map((i) => [String(i.id), i]));
+      }
+
+      const itemsCol = collection(db, "items");
+      let hiddenMap = new Map();
+
+      const itemsQuery = query(itemsCol, orderBy("name"));
+      onSnapshot(
+        itemsQuery,
+        (snap) => {
+          hiddenMap.clear();
+          for (const d of snap.docs) {
+            const id = String(d.id);
+            const data = d.data() || {};
+            if (data.hidden) hiddenMap.set(id, true);
+            else hiddenMap.set(id, false);
+          }
+          renderItemsList();
+          refreshOrdersOnce();
+        },
+        (err) => {
+          console.error("items snapshot error", err);
+        }
+      );
+
+      let showHidden = false;
+
+      function renderItemsList() {
+        const q = (itemSearch.value || "").trim().toLowerCase();
+        itemsList.innerHTML = "";
+
+        if (!allData.length) {
+          const msg = document.createElement("div");
+          msg.className = "meta-small";
+          msg.style.padding = "10px 6px";
+          msg.textContent = "Loading items...";
+          itemsList.appendChild(msg);
+          return;
+        }
+
+        const filtered = allData.filter((it) => {
+          const isHidden = !!hiddenMap.get(String(it.id));
+
+          if (showHidden) {
+            if (!isHidden) return false;
+          } else {
+            if (isHidden) return false;
+          }
+
+          if (!q) return true;
+          const name = (it.name || "").toLowerCase();
+          const cat = (it.category || "").toLowerCase();
+          const priceText = (it.price || "").toString().toLowerCase();
+          return name.includes(q) || cat.includes(q) || priceText.includes(q);
+        });
+
+        if (!filtered.length) {
+          const msg = document.createElement("div");
+          msg.className = "meta-small";
+          msg.style.padding = "10px 6px";
+          msg.textContent = showHidden ? "No hidden items." : "No items found.";
+          itemsList.appendChild(msg);
+          return;
+        }
+
+        for (const it of filtered) {
+          const row = document.createElement("div");
+          row.className = "item-row";
+          row.dataset.id = it.id;
+
+          const thumb = document.createElement("div");
+          thumb.className = "item-thumb";
+          const img = document.createElement("img");
+          img.src = it.image || "owl-logo.webp";
+          img.alt = it.name;
+          img.onerror = () => {
+            img.src = "owl-logo.webp";
+          };
+          thumb.appendChild(img);
+
+          const title = document.createElement("div");
+          title.style.display = "flex";
+          title.style.flexDirection = "column";
+          title.style.gap = "2px";
+          const nameEl = document.createElement("div");
+          nameEl.className = "item-name";
+          nameEl.textContent = it.name || "Untitled";
+          const sub = document.createElement("div");
+          sub.className = "meta-small";
+          sub.style.color = "var(--muted)";
+          sub.textContent = it.category || "";
+
+          title.appendChild(nameEl);
+          title.appendChild(sub);
+
+          const meta = document.createElement("div");
+          meta.className = "item-meta";
+
+          const priceEl = document.createElement("div");
+          priceEl.className = "meta-small";
+          priceEl.textContent = currencyFmt.format(it.price || 0);
+          // meta.appendChild(priceEl);
+
+          const isHidden = !!hiddenMap.get(String(it.id));
+          const toggle = document.createElement("button");
+          toggle.type = "button";
+          toggle.className = isHidden ? "toggle-unhide" : "toggle-btn";
+          toggle.textContent = isHidden ? "Unhide" : "Hide";
+          toggle.title = isHidden
+            ? "Make item available"
+            : "Mark item unavailable";
+
+          toggle.setAttribute("aria-pressed", String(isHidden));
+          toggle.setAttribute(
+            "aria-label",
+            (isHidden ? "Unhide " : "Hide ") + (it.name || "")
+          );
+
+          toggle.addEventListener("click", async () => {
+            const doIt = await confirmModal({
+              title: isHidden ? "Unhide item?" : "Hide item?",
+              message: isHidden
+                ? `Mark "${it.name}" available again?`
+                : `Mark "${it.name}" as unavailable (hide)?`,
+              confirmText: isHidden ? "Unhide" : "Hide",
+              cancelText: "Cancel",
+            });
+            if (!doIt) return;
+            try {
+              await setDoc(
+                doc(db, "items", String(it.id)),
+                { hidden: !isHidden, name: it.name, price: it.price },
+                { merge: true }
+              );
+              showToast(isHidden ? "Item unhidden" : "Item hidden");
+              toggle.setAttribute("aria-pressed", String(!isHidden));
+            } catch (err) {
+              console.error("update item failed", err);
+              showToast("Failed to update item");
+            }
+          });
+
+          meta.appendChild(toggle);
+
+          row.appendChild(thumb);
+          row.appendChild(title);
+          row.appendChild(meta);
+          itemsList.appendChild(row);
+        }
+      }
+
+      itemSearch.addEventListener("input", () => renderItemsList());
+      refreshItemsBtn.addEventListener("click", async () => {
+        await loadDataJson();
+        renderItemsList();
+        showToast("Items refreshed from data.json");
+      });
+
+      showHiddenToggle.addEventListener("click", () => {
+        showHidden = !showHidden;
+        showHiddenToggle.textContent = showHidden
+          ? "Hide hidden"
+          : "Show hidden";
+        showHiddenToggle.setAttribute("aria-pressed", String(showHidden));
+        renderItemsList();
+      });
+
+      const ordersCol = collection(db, "orders");
+      const ordersQuery = query(ordersCol, orderBy("created", "desc"));
+
+      async function refreshOrdersOnce() {
+        try {
+          const { getDocs } = await import(
+            "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js"
+          );
+          const snap = await getDocs(ordersQuery);
+          const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          renderOrders(docs);
+        } catch (err) {
+          console.error("refresh orders failed", err);
+        }
+      }
+
+      onSnapshot(
+        ordersQuery,
+        (snap) => {
+          const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          renderOrders(docs);
+        },
+        (err) => {
+          console.error("orders snapshot error", err);
+          kdsContainer.innerHTML =
+            '<div class="meta-small" style="padding:10px 6px">Failed to load orders</div>';
+        }
+      );
+
+      function renderOrders(docs) {
+        kdsContainer.innerHTML = "";
+        const q = (kdsSearch.value || "").trim().toLowerCase();
+        let visibleCount = 0;
+        for (const o of docs) {
+          if ((o.status || "").toLowerCase() === "served") continue;
+          if (q) {
+            const matchesTable = (o.table || "").toLowerCase().includes(q);
+            const matchesId = (o.id || "").toLowerCase().includes(q);
+            const matchesItem = (o.items || []).some((it) =>
+              (it.name || "").toLowerCase().includes(q)
+            );
+            if (!(matchesTable || matchesId || matchesItem)) continue;
+          }
+          const card = renderOrderCard(o);
+          if (card) {
+            kdsContainer.appendChild(card);
+            visibleCount++;
+          }
+        }
+        if (!visibleCount) {
+          const msg = document.createElement("div");
+          msg.className = "meta-small";
+          msg.style.padding = "10px 6px";
+          msg.textContent = "No active orders.";
+          kdsContainer.appendChild(msg);
+        }
+      }
+
+      kdsSearch.addEventListener("input", () => {
+        refreshOrdersOnce();
+      });
+
+      function renderOrderCard(order) {
+        if ((order.status || "").toLowerCase() === "served") return null;
+
+        const card = document.createElement("div");
+        card.className = "card";
+        card.dataset.id = order.id;
+
+        const metaRow = document.createElement("div");
+        metaRow.className = "card-meta-row";
+
+        const leftMeta = document.createElement("div");
+        leftMeta.className = "left-meta";
+
+        const idEl = document.createElement("div");
+        idEl.className = "order-id";
+        idEl.textContent = `#${(order.id || "").slice(0, 6)}`;
+
+        const tableEl = document.createElement("div");
+        tableEl.className = "meta-small";
+        tableEl.textContent = `Table: ${order.table || "—"}`;
+
+        const timeEl = document.createElement("div");
+        timeEl.className = "meta-small";
+        try {
+          timeEl.textContent = new Date(order.created).toLocaleTimeString();
+        } catch {
+          timeEl.textContent = order.created || "—";
+        }
+
+        leftMeta.appendChild(timeEl);
+        leftMeta.appendChild(tableEl);
+
+        const rightMeta = document.createElement("div");
+        rightMeta.className = "meta-small";
+        const parts = [];
+        if (order.etaLabel) parts.push(`ETA: ${order.etaLabel}`);
+        rightMeta.textContent = parts.join(" • ");
+
+        metaRow.appendChild(leftMeta);
+        metaRow.appendChild(rightMeta);
+
+        const itemsWrap = document.createElement("div");
+        itemsWrap.className = "items";
+
+        let totalValue = 0;
+
+        (order.items || []).forEach((it) => {
+          const row = document.createElement("div");
+          row.className = "item-row";
+
+          const qty = document.createElement("div");
+          qty.className = "item-qty";
+          const qtyNum = it.qty != null ? Number(it.qty) : 1;
+          qty.textContent = qtyNum;
+
+          const name = document.createElement("div");
+          name.className = "item-name";
+          name.textContent = it.name || "Unknown";
+
+          const canonical = allDataMap.get(String(it.id));
+          const pricePerUnit = Number(
+            canonical?.price ?? (it.price != null ? it.price : 0)
+          );
+          totalValue += pricePerUnit * qtyNum;
+
+          // const prepText =
+          //   (it.prep ?? it.preparation ?? canonical?.prep ?? "") + "";
+          // const prepEl = document.createElement("div");
+          // prepEl.className = "item-prep";
+          // if (prepText.trim()) prepEl.textContent = prepText.trim();
+
+          row.appendChild(qty);
+          row.appendChild(name);
+
+          if (hiddenMap.get(String(it.id))) {
+            const ub = document.createElement("div");
+            ub.className = "unavailable-badge";
+            ub.textContent = "UNAVAILABLE";
+            row.appendChild(ub);
+          }
+
+          // if (prepText.trim()) row.appendChild(prepEl);
+          itemsWrap.appendChild(row);
+        });
+
+        const footer = document.createElement("div");
+        footer.className = "card-footer";
+
+        const notes = document.createElement("div");
+        notes.textContent = order.notes ? `Notes: ${order.notes}` : "";
+
+        const totalEl = document.createElement("div");
+        totalEl.className = "meta-small";
+        totalEl.style.fontWeight = "800";
+        totalEl.textContent = `Total: ${currencyFmt.format(
+          Math.round(totalValue)
+        )}`;
+
+        const doneBtn = document.createElement("button");
+        doneBtn.className = "done-btn";
+        doneBtn.type = "button";
+        doneBtn.textContent = "Done";
+        doneBtn.title = "Mark order done (permanently delete)";
+        doneBtn.addEventListener("click", async () => {
+          const ok = await confirmModal({
+            title: `Remove order #${(order.id || "").slice(0, 6)}?`,
+            message:
+              "This will permanently delete the order and cannot be undone.",
+            confirmText: "Remove",
+            cancelText: "Cancel",
+          });
+          if (!ok) return;
+          try {
+            await deleteDoc(doc(db, "orders", order.id));
+            showToast("Order removed");
+          } catch (err) {
+            console.error("delete failed", err);
+            showToast("Failed to delete order");
+          }
+        });
+
+        footer.appendChild(notes);
+        footer.appendChild(totalEl);
+        footer.appendChild(doneBtn);
+
+        card.appendChild(metaRow);
+        card.appendChild(itemsWrap);
+        card.appendChild(footer);
+        return card;
+      }
+
+      (async function init() {
+        await loadDataJson();
+        renderItemsList();
+      })();
+    </script>
+  </body>
+</html>
